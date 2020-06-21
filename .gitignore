@@ -127,3 +127,19 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# vscode settings
+.vscode
+
+# python security settings
+security.py
+
+# python loading files
+media
+
+# python migration for bd
+migrations
+
+logging/
+
+celerybeat*
