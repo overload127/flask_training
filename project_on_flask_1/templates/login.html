@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{{ super() }}
+
+{% for cat, msg in get_flashed_messages(true) %}
+    <div class="flash {{ cat }}">{{ msg }}</div>
+{% endfor %}
+
+<form
+    {% if request.args.get('next') %}
+        action="{{ url_for('login', next=request.args.get('next')) }}"
+    {% else %}
+        action="{{ url_for('login') }}"
+    {% endif %}
+    method="post" class="form-contact">
+    <p><label>Email: </label> <input type="text" name="username" value="" requied /></p>
+    <p><label>Пароль: </label> <input type="password" name="psw" value="" requied /></p>
+    <p><input type="checkbox" name="remainme" /> Запомнить меня</p>
+    <p><input type="submit" value="Войти" /></p>
+</form>
+
+{% endblock %}
