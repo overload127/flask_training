@@ -3,23 +3,40 @@ import sqlite3
 
 from flask import (
     Flask, render_template, request, flash, redirect, url_for,
-    session, abort, g
+    session, abort, g, make_response
 )
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from FDataBase import FDataBase
+from UserLogin import UserLogin
+from forms import LoginForm, RegisterForm
+from admin.admin import admin
 
 
 # конфигурация
 DATABASE = '/tmp/flsite.db'
 DEBUG = True
 SECRET_KEY = 'DSFDSFSDFSDFADFASFSDFFSDBGSDGRT43432V42GRV4G'
+MAX_CONTENT_LENGHT = 1024 * 1024
 
 
 app = Flask(__name__)
 app.config.from_object(__name__)
-
 app.config.update(dict(DATABASE=os.path.join(app.root_path, 'flsite.db')))
+app.register_blueprint(admin, url_prefix='/admin')
+
+
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+login_manager.login_message = 'Авторизуйтесь для доступа к закрытым страницам'
+login_manager.login_message_category = 'success'
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    print('load_user')
+    return UserLogin().fromDB(user_id, dbase)
 
 
 def connect_db():
@@ -92,49 +109,52 @@ def contact():
     )
 
 
-@app.route('/profile/<username>')
-def profile(username):
-    if 'userLogger' not in session or username != session['userLogger']:
-        abort(401)
-    return f'Профиль пользователя: {username}'
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Вы вышли из аккаунта', 'success')
+    return redirect(url_for('login'))
+
+
+@app.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html', menu=dbase.getMenu(), title='Профиль')
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # if 'userLogger' in session:
-    #    return redirect(url_for('profile', username=session['userLogger']))
-    # elif (
-    if (
-        request.method == 'POST' and
-        request.form['username'] == 'selfedu' and
-        request.form['psw'] == '123'
-    ):
-        session['userLogger'] = request.form['username']
-        return redirect(url_for('profile', username=session['userLogger']))
+    if current_user.is_authenticated:
+        return redirect(url_for('profile'))
 
-    return render_template(
-        'login.html',
-        title='Авторизация',
-        menu=dbase.getMenu()
-    )
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = dbase.getUserByEmail(form.email.data)
+        if user and check_password_hash(user['psw'], form.psw.data):
+            userlogin = UserLogin().create(user)
+            rm = form.remember.data
+            login_user(userlogin, remember=rm)
+            return redirect(request.args.get('next') or url_for('profile'))
+
+        flash('Неверная пара логин/пароль', 'error')
+
+    return render_template('login.html', menu=dbase.getMenu(), title='Авторизация', form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-        if len(request.form['name']) > 4 and len(request.form['email']) > 4 \
-            and len(request.form['psw']) > 4 and request.form['psw'] == request.form['psw2']:
-            hash_ = generate_password_hash(request.form['psw'])
-            res = dbase.addUser(request.form['name'], request.form['email'], hash_)
-            if res:
-                flash('Вы успешно зарегестрированы', 'success')
-                return redirect(url_for('login'))
-            else:
-                flash('Ошибка при добавлении в БД', 'error')
+    form = RegisterForm()
+    if form.validate_on_submit():
+        hash_ = generate_password_hash(request.form['psw'])
+        res = dbase.addUser(request.form['name'], request.form['email'], hash_)
+        if res:
+            flash('Вы успешно зарегестрированы', 'success')
+            return redirect(url_for('login'))
         else:
-            flash('Неверно заполнены поля', 'error')
+            flash('Ошибка при добавлении в БД', 'error')
 
-    return render_template('register.html', menu=dbase.getMenu(), title='Регистрация')
+    return render_template('register.html', menu=dbase.getMenu(), title='Регистрация', form=form)
 
 
 @app.errorhandler(404)
@@ -166,6 +186,7 @@ def addPost():
 
 
 @app.route('/post/<string:url_post>')
+@login_required
 def showPost(url_post):
     title, post = dbase.getPost(url_post)
     if not title:
@@ -177,6 +198,39 @@ def showPost(url_post):
         title=title,
         post=post
     )
+
+
+@app.route('/userava')
+@login_required
+def userava():
+    img = current_user.getAvatar(app)
+    if not img:
+        return ''
+
+    h = make_response(img)
+    h.headers['Content-Type'] = 'image/png'
+    return h
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+@login_required
+def upload():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and current_user.verifyExt(file.filename):
+            try:
+                img = file.read()
+                res = dbase.updateUserAvatar(img, current_user.get_id())
+                if not res:
+                    flash('Ошибка обновления аватара', 'error')
+                flash('Аватар обновлен', 'success')
+            except FileNotFoundError as e:
+                flash('Ошибка чтения файла', 'error')
+        else:
+            flash('Ошибка обновления аватара', 'error')
+
+    return redirect(url_for('profile'))
+                
 
 
 if __name__ == '__main__':
