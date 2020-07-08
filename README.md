@@ -8,4 +8,9 @@
 
 3) flask_blog_1 - Блог по гайду (Олег Молчанов) (https://www.youtube.com/watch?v=Y_oyx36AdV0&list=PLlWXhlUMyooZr5R2u2Zwxt6Pw6iwBo5y5)
 
-3) project_on_flask_1 - сайт-приложение по гайду (selfedu) (https://www.youtube.com/playlist?list=PLA0M1Bcd0w8yrxtwgqBvT6OM4HkOU3xYn)
+4) project_on_flask_1 - сайт-приложение по гайду (selfedu) (https://www.youtube.com/playlist?list=PLA0M1Bcd0w8yrxtwgqBvT6OM4HkOU3xYn)
+
+5) flask_reset_ful_api_1 - restful api по гайду-видео. Реализация простой аутификации и немного функционала (Pretty Printed) (https://www.youtube.com/watch?v=WxGBoY5iNXY)
+
+6) hubr_book_flask - Сайт по переведенному учебнику из хабра (Автор мигель, переводчик AlekSandrDr
+) (https://habr.com/ru/post/346306/)
