@@ -1,21 +1,14 @@
 from datetime import datetime
+from hashlib import md5
 from time import time
-
-import jwt
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from hashlib import md5
-
-from app import app, db
-from app import login
+import jwt
+from app import app, db, login
 
 
-@login.user_loader
-def load_user(id):
-    return User.query.get(int(id))
-
-
-followers = db.Table('followers',
+followers = db.Table(
+    'followers',
     db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
 )
@@ -34,6 +27,9 @@ class User(UserMixin, db.Model):
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -79,8 +75,10 @@ class User(UserMixin, db.Model):
             return
         return User.query.get(id)
 
-    def __repr__(self):
-        return '<User {}>'.format(self.username)
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 
 class Post(db.Model):
