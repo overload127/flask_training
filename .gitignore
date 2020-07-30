@@ -144,3 +144,5 @@ migrations
 logging/
 
 celerybeat*
+
+messages.pot
