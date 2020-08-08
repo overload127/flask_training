@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-07-30 10:56+0300\n"
+"POT-Creation-Date: 2020-07-30 21:43+0300\n"
 "PO-Revision-Date: 2020-07-30 09:58+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -35,7 +35,7 @@ msgstr "Пароль"
 msgid "Remember Me"
 msgstr "Запомнить данные для входа"
 
-#: app/forms.py:14 app/routes.py:75 app/templates/login.html:5
+#: app/forms.py:14 app/routes.py:83 app/templates/login.html:5
 msgid "Sign In"
 msgstr "Войти"
 
@@ -47,7 +47,7 @@ msgstr "Почта"
 msgid "Repeat Password"
 msgstr "Повтор пароля"
 
-#: app/forms.py:23 app/routes.py:96 app/templates/register.html:5
+#: app/forms.py:23 app/routes.py:104 app/templates/register.html:5
 msgid "Register"
 msgstr "Регистрация"
 
@@ -75,68 +75,76 @@ msgstr "Подтвердить"
 msgid "Say something"
 msgstr "Сообщить что-нибуть"
 
-#: app/routes.py:32
+#: app/routes.py:40
 msgid "Your post is now live!"
 msgstr "Ваш пост опубликован"
 
-#: app/routes.py:41 app/templates/base.html:27
+#: app/routes.py:49 app/templates/base.html:41
 msgid "Home"
 msgstr "Домой"
 
-#: app/routes.py:56 app/templates/base.html:28
+#: app/routes.py:64 app/templates/base.html:42
 msgid "Explore"
 msgstr "Список постов"
 
-#: app/routes.py:68
+#: app/routes.py:76
 msgid "Invalid username or password"
 msgstr "Неправильный никнейм или пароль"
 
-#: app/routes.py:94
+#: app/routes.py:102
 msgid "Congratulations, you are now a registered user!"
 msgstr "Поздравляем, пользователь успешно зарегестрирован"
 
-#: app/routes.py:108
+#: app/routes.py:116
 msgid "Check your email for the instructions to reset your password"
 msgstr "Проверьте почту на наличие письма с инструкцией о том как сбросить пароль"
 
-#: app/routes.py:111 app/templates/reset_password_request.html:5
+#: app/routes.py:119 app/templates/reset_password_request.html:5
 msgid "Reset Password"
 msgstr "Сброс пароля"
 
-#: app/routes.py:125
+#: app/routes.py:133
 msgid "Your password has been reset."
 msgstr "Вашпароль был успешно изменен"
 
-#: app/routes.py:154
+#: app/routes.py:162
 msgid "Your changes have been saved."
 msgstr "Ваш изменения были сохранены"
 
-#: app/routes.py:159 app/templates/edit_profile.html:5
+#: app/routes.py:167 app/templates/edit_profile.html:5
 msgid "Edit Profile"
 msgstr "Редактировать информацию о Вас"
 
-#: app/routes.py:170 app/routes.py:190
+#: app/routes.py:178 app/routes.py:198
 #, python-format
 msgid "User %(username)s not found."
 msgstr "Пользователь %(username)s не найден"
 
-#: app/routes.py:173
+#: app/routes.py:181
 msgid "You cannot follow yourself!"
 msgstr "Вы не можете подписаться на самого себя!"
 
-#: app/routes.py:177
+#: app/routes.py:185
 #, python-format
 msgid "You are following %(username)s!"
 msgstr "Вы подписались на пользователя %(username)s!"
 
-#: app/routes.py:193
+#: app/routes.py:201
 msgid "You cannot unfollow yourself!"
 msgstr "Вы не можете отписаться от скбя!"
 
-#: app/routes.py:197
+#: app/routes.py:205
 #, python-format
 msgid "You are not following %(username)s."
 msgstr "Вы не можете подписаться на пользователя %(username)s."
+
+#: app/translate.py:10
+msgid "Error: the translation service is not configured."
+msgstr ""
+
+#: app/translate.py:17
+msgid "Error: the translation service failed."
+msgstr ""
 
 #: app/templates/404.html:4
 msgid "File Not Found"
@@ -151,11 +159,19 @@ msgstr "Назад"
 msgid "%(username)s said %(when)s"
 msgstr "Пользователь %(username)s написал в %(when)s"
 
-#: app/templates/base.html:32
+#: app/templates/_post.html:28
+msgid "Translate"
+msgstr ""
+
+#: app/templates/base.html:17
+msgid "Error: Could not contact server."
+msgstr ""
+
+#: app/templates/base.html:46
 msgid "Login"
 msgstr "Вход"
 
-#: app/templates/base.html:35
+#: app/templates/base.html:49
 msgid "Logout"
 msgstr "Выход"
 
